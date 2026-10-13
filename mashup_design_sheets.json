@@ -1,0 +1,647 @@
+{
+  "meta": {
+    "working_title": "Palworld: Los Santos",
+    "host": {
+      "game": "palworld",
+      "role": "primary",
+      "loader": "ue4ss"
+    },
+    "companion": {
+      "game": "gta-v",
+      "role": "required",
+      "launch_ref": "{game:gta-v}",
+      "note": "Required host-side game. GTA V content (cars, characters, map, sound) is read from the player's own copy; nothing from GTA V is copied or uploaded. Story mode only. GTA V does NOT run beside Palworld: everything is played in the Palworld window."
+    },
+    "mode": "multiplayer (Palworld dedicated/host session)",
+    "status": "DESIGN ONLY - not built, not tested, not published",
+    "open_obstacles": [
+      "GTA V map/models/vehicles live in proprietary RPF archives; loading them into Unreal at runtime is the hardest part. Agent must pick a route (runtime reader/converter, or GTA running beside Palworld via recipe.together passing events) and get the user's agreement if the design must change.",
+      "GTA V Legacy story mode is single player; GTA is never the multiplayer layer. Players join the Palworld session.",
+      "Player counts (120 in world, 500 supported) are targets to be measured in testing, not promised. maxPlayers must be the tested number.",
+      "No planes/boats: removing them is a removal in GTA content; flying/swimming pals replace them."
+    ],
+    "v1_scope": "Small first playable: Palworld world with GTA map layout as the region, pal mounts without saddles, spear catching, 5 GTA vehicles stealable, 3 weapons at an ammu-shop, 1 bank selling build materials, 1 GTA boss, XP cap 300, one base with radius 3x.",
+    "fill_status": "Cells filled with proposed design values on 2026-10-12. None verified against game files. Design decisions updated 2026-10-12 after owner chat.",
+    "gta_route": {
+      "status": "DECIDED by owner (route unproven)",
+      "decision": "Single window: everything is played inside Palworld. GTA V is required and is the source of real content (vehicles, characters, map, sound) read from the player's own install at runtime.",
+      "replaces": "Earlier proposal (recipe.together, GTA running beside Palworld) was NOT chosen.",
+      "obstacle": "Loading GTA V's RPF archive content into Unreal at runtime is unproven. If a part proves impossible, explain it and get the owner's agreement before changing the design.",
+      "real_gta_parts": [
+        "cars (Futo, Sultan, Buffalo)",
+        "characters (Franklin, Michael, Trevor)",
+        "Los Santos map",
+        "sound"
+      ]
+    },
+    "credits": {
+      "author": "Wolf001",
+      "license": "CC-BY-4.0",
+      "remix_allowed": true,
+      "attribution_required": true
+    }
+  },
+  "sheets": {
+    "pals_placement": {
+      "columns": [
+        "id",
+        "palworld_pal",
+        "gta_zone",
+        "spawn_type",
+        "day_night",
+        "verified"
+      ],
+      "rows": [
+        [
+          "p_city_01",
+          "Lamball",
+          "Downtown Los Santos",
+          "wild",
+          "both",
+          false
+        ],
+        [
+          "p_city_02",
+          "Direhowl",
+          "Davis / Strawberry",
+          "wild",
+          "both",
+          false
+        ],
+        [
+          "p_beach_01",
+          "Pengullet",
+          "Vespucci Beach",
+          "wild",
+          "day",
+          false
+        ],
+        [
+          "p_beach_02",
+          "Foxparks",
+          "Del Perro",
+          "wild",
+          "night",
+          false
+        ],
+        [
+          "p_mount_01",
+          "Eikthyrdeer",
+          "Mount Chiliad",
+          "wild",
+          "both",
+          false
+        ],
+        [
+          "p_air_01",
+          "Nitewing",
+          "Mount Chiliad (cliffs)",
+          "wild",
+          "night",
+          false
+        ],
+        [
+          "p_sea_01",
+          "Fuack",
+          "Pacific coast",
+          "wild",
+          "both",
+          false
+        ],
+        [
+          "p_sea_02",
+          "Celaray",
+          "Pacific deep water",
+          "wild",
+          "both",
+          false
+        ]
+      ],
+      "note": "Palworld pal names are from general knowledge of the game, not read from game files. Check every id against the Palworld pal list and confirm rideable/swimming flags."
+    },
+    "mounts": {
+      "columns": [
+        "id",
+        "type",
+        "saddle_required",
+        "unlock_level",
+        "replaces",
+        "unique_style_unlock_level",
+        "verified"
+      ],
+      "rows": [
+        [
+          "m_fly",
+          "flying pal",
+          false,
+          1,
+          "planes",
+          40,
+          false
+        ],
+        [
+          "m_swim",
+          "swimming pal",
+          false,
+          1,
+          "boats",
+          40,
+          false
+        ],
+        [
+          "m_ground",
+          "ground pal",
+          false,
+          1,
+          "none",
+          20,
+          false
+        ]
+      ],
+      "rule": "Any pal caught with a spear can be ridden at once."
+    },
+    "catching": {
+      "columns": [
+        "id",
+        "tool",
+        "target",
+        "blocked_if",
+        "verified"
+      ],
+      "rows": [
+        [
+          "c_spear",
+          "spear",
+          "wild pal",
+          "pal owned by another tamer",
+          false
+        ]
+      ]
+    },
+    "vehicles": {
+      "columns": [
+        "id",
+        "gta_vehicle_ref",
+        "source",
+        "stealable",
+        "unlock_level",
+        "verified"
+      ],
+      "rows": [
+        [
+          "v_01",
+          "Futo",
+          "{game:gta-v}",
+          true,
+          1,
+          false
+        ],
+        [
+          "v_02",
+          "Sultan",
+          "{game:gta-v}",
+          true,
+          5,
+          false
+        ],
+        [
+          "v_03",
+          "Buffalo",
+          "{game:gta-v}",
+          true,
+          10,
+          false
+        ]
+      ],
+      "excluded": [
+        "aircraft",
+        "boats"
+      ]
+    },
+    "weapons": {
+      "columns": [
+        "id",
+        "type",
+        "damage",
+        "clip_size",
+        "unlock_level",
+        "sold_at",
+        "verified"
+      ],
+      "rows": [
+        [
+          "w_pistol",
+          "gun",
+          26,
+          12,
+          1,
+          "shop_ammu",
+          false
+        ],
+        [
+          "w_smg",
+          "gun",
+          22,
+          30,
+          15,
+          "shop_ammu",
+          false
+        ],
+        [
+          "w_spear_basic",
+          "spear",
+          35,
+          1,
+          1,
+          "shop_ammu",
+          false
+        ],
+        [
+          "w_spear_adv",
+          "spear",
+          70,
+          1,
+          25,
+          "shop_ammu",
+          false
+        ]
+      ],
+      "note": "Damage and clip values are starting design numbers to tune in playtesting. Spears hold 1 (thrown, then recalled)."
+    },
+    "shops": {
+      "columns": [
+        "id",
+        "kind",
+        "sells",
+        "robbable",
+        "robbery_loot",
+        "verified"
+      ],
+      "rows": [
+        [
+          "shop_ammu",
+          "ammunition",
+          "guns, spears, ammo",
+          true,
+          "cash",
+          false
+        ],
+        [
+          "shop_bank_01",
+          "bank",
+          "building materials",
+          true,
+          "materials",
+          false
+        ]
+      ]
+    },
+    "bosses": {
+      "columns": [
+        "id",
+        "gta_character_ref",
+        "role",
+        "arena",
+        "level",
+        "verified"
+      ],
+      "rows": [
+        [
+          "b_01",
+          "GTA V Franklin (from player's copy)",
+          "boss tameable-style fight",
+          "arena_vinewood",
+          30,
+          false
+        ],
+        [
+          "b_02",
+          "GTA V Michael (from player's copy)",
+          "boss",
+          "arena_zancudo",
+          60,
+          false
+        ],
+        [
+          "b_03",
+          "GTA V Trevor (from player's copy)",
+          "boss",
+          "arena_chiliad",
+          90,
+          false
+        ]
+      ],
+      "note": "arena column now references arenas.id"
+    },
+    "progression": {
+      "columns": [
+        "id",
+        "system",
+        "value",
+        "verified"
+      ],
+      "rows": [
+        [
+          "lv_max",
+          "level cap",
+          300,
+          false
+        ],
+        [
+          "lv_unlocks",
+          "builds, weapons, spears, pal styles unlock by level (Palworld tech-style)",
+          "see sheet: unlocks",
+          false
+        ],
+        [
+          "lv_xp",
+          "XP sources: GTA-style missions, robberies, catches, bosses",
+          {
+            "mission": 500,
+            "robbery_shop": 150,
+            "robbery_bank": 600,
+            "catch_wild_pal": 50,
+            "boss_b_01": 3000,
+            "boss_b_02": 8000,
+            "boss_b_03": 20000
+          },
+          false
+        ],
+        [
+          "lv_curve",
+          "xp needed to reach next level",
+          "round(100 * level ** 1.5)",
+          false
+        ]
+      ]
+    },
+    "bases": {
+      "columns": [
+        "id",
+        "setting",
+        "value",
+        "verified"
+      ],
+      "rows": [
+        [
+          "base_radius",
+          "radius multiplier vs Palworld default",
+          3,
+          false
+        ],
+        [
+          "base_pals",
+          "max pals per base",
+          30,
+          false
+        ],
+        [
+          "base_bench",
+          "crafting benches, crushers, all Palworld stations",
+          "all",
+          false
+        ],
+        [
+          "base_resources",
+          "resource nodes spread across the whole map",
+          "yes",
+          false
+        ]
+      ]
+    },
+    "crews_and_admin": {
+      "columns": [
+        "id",
+        "feature",
+        "rule",
+        "verified"
+      ],
+      "rows": [
+        [
+          "crew_size",
+          "crew max members",
+          20,
+          false
+        ],
+        [
+          "admin_first",
+          "first player to join a world is main admin",
+          "gets admin panel",
+          false
+        ],
+        [
+          "admin_assign",
+          "main admin can assign admins",
+          "each admin sets own password, remembered on rejoin",
+          false
+        ],
+        [
+          "admin_remove",
+          "main admin can delete admins",
+          "removed admins lose access",
+          false
+        ],
+        [
+          "admin_menu",
+          "built-in mod menu",
+          "admins only",
+          false
+        ],
+        [
+          "autosave",
+          "world autosave",
+          "host (original starter) only, so progress continues next session",
+          false
+        ],
+        [
+          "secrets",
+          "password storage",
+          "hashed and salted, never plain text",
+          false
+        ]
+      ]
+    },
+    "multiplayer": {
+      "columns": [
+        "id",
+        "setting",
+        "value",
+        "status"
+      ],
+      "rows": [
+        [
+          "mp_target_world",
+          "players in world",
+          120,
+          "target, must be measured"
+        ],
+        [
+          "mp_target_support",
+          "players supported overall",
+          500,
+          "target, must be measured"
+        ],
+        [
+          "mp_connect",
+          "join method",
+          "Palworld session via Melty join link",
+          "run setup_multiplayer"
+        ],
+        [
+          "mp_test",
+          "test",
+          "two game copies on this PC (host + join)",
+          "not done"
+        ],
+        [
+          "mp_maxplayers",
+          "maxPlayers setting",
+          "unset until measured; do not publish a number",
+          "blocked on mp_test"
+        ]
+      ]
+    },
+    "arenas": {
+      "columns": [
+        "id",
+        "gta_zone",
+        "size_m",
+        "spawn_points",
+        "verified"
+      ],
+      "rows": [
+        [
+          "arena_vinewood",
+          "Vinewood Hills mansion grounds",
+          120,
+          4,
+          false
+        ],
+        [
+          "arena_zancudo",
+          "Fort Zancudo gate",
+          160,
+          6,
+          false
+        ],
+        [
+          "arena_chiliad",
+          "Mount Chiliad summit",
+          100,
+          4,
+          false
+        ]
+      ]
+    },
+    "unlocks": {
+      "columns": [
+        "level",
+        "unlock",
+        "kind",
+        "ref",
+        "verified"
+      ],
+      "rows": [
+        [
+          1,
+          "Flying, swimming, ground pal mounts (no saddle)",
+          "mount",
+          "m_fly,m_swim,m_ground",
+          false
+        ],
+        [
+          1,
+          "Futo",
+          "vehicle",
+          "v_01",
+          false
+        ],
+        [
+          1,
+          "Pistol",
+          "weapon",
+          "w_pistol",
+          false
+        ],
+        [
+          1,
+          "Basic spear",
+          "weapon",
+          "w_spear_basic",
+          false
+        ],
+        [
+          5,
+          "Sultan",
+          "vehicle",
+          "v_02",
+          false
+        ],
+        [
+          10,
+          "Buffalo",
+          "vehicle",
+          "v_03",
+          false
+        ],
+        [
+          15,
+          "SMG",
+          "weapon",
+          "w_smg",
+          false
+        ],
+        [
+          20,
+          "Ground pal unique style",
+          "mount_style",
+          "m_ground",
+          false
+        ],
+        [
+          25,
+          "Advanced spear",
+          "weapon",
+          "w_spear_adv",
+          false
+        ],
+        [
+          30,
+          "Boss 1 fight",
+          "boss",
+          "b_01",
+          false
+        ],
+        [
+          40,
+          "Flying and swimming unique styles",
+          "mount_style",
+          "m_fly,m_swim",
+          false
+        ],
+        [
+          60,
+          "Boss 2 fight",
+          "boss",
+          "b_02",
+          false
+        ],
+        [
+          90,
+          "Boss 3 fight",
+          "boss",
+          "b_03",
+          false
+        ]
+      ]
+    }
+  },
+  "preflight_todo": [
+    "DONE: owner decisions recorded (single Palworld window, GTA V required, real GTA content, CC BY 4.0, Wolf001)",
+    "OPEN: prove a runtime route for reading GTA V content into Palworld (UE4SS)",
+    "OPEN: verify every cell against Palworld and GTA V files",
+    "OPEN: build, test host+join with two Palworld copies, measure player counts",
+    "OPEN: capture a real gameplay screenshot of this version running",
+    "OPEN: Melty steps (list_my_mods, create_mod, upload, test_release, publish) need melty.gg access"
+  ]
+}
